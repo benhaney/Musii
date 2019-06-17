@@ -1,0 +1,467 @@
+@import url('/css/roboto.css');
+
+*::selection {
+  background: none;
+}
+
+button::-moz-focus-inner {
+  border: 0 !important;
+}
+
+body {
+  background: #f9f9f9;
+  margin: 0;
+  margin-bottom: 11vmax;
+  font-family: 'Roboto', arial, 'Noto Sans Japanese', sans-serif;
+}
+
+header {
+  background: #ff5722;
+  color: white;
+}
+
+header nav ul {
+  display: flex;
+  padding: 0 1em;
+  margin: 0;
+  overflow-x: auto;
+}
+
+header nav ul li {
+  display: inline-block;
+  padding: 0.75em;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+header nav ul li.active {
+  border-bottom-color: white;
+}
+#back-gap {
+  width: 0.75em;
+}
+#back-button {
+  position: fixed;
+  z-index: 999;
+}
+#back-button div {
+  display: inline-block;
+  vertical-align: middle;
+}
+#back-button div:before {
+  content: "";
+  display: block;
+  width: 0.75em;
+  height: 0.75em;
+  border: 2px solid white;
+  border-right-width: 0;
+  border-bottom-width: 0;
+  box-sizing: border-box;
+  transform: rotate(-45deg);
+}
+#back-button div:after {
+  content: "";
+  display: block;
+  width: 0.75em;
+  height: 0;
+  border: 1px solid white;
+  position: relative;
+  top: calc(-0.375em - 1px);
+}
+
+.albums, .artists {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin: 1.3vmin auto;
+  width: 100vmin
+}
+
+.albums .album, .artists .artist {
+  width: 46vmin;
+  height: 46vmin;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+  margin: 1.3vmin 0;
+  background: #eee;
+  overflow: hidden;
+}
+
+.artists .artist {
+  height: 23vmin;
+}
+
+.albums .album img {
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  background: #eee;
+  top: 0;
+}
+
+.album .bar, .artist .bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: 5px 8px;
+  box-sizing: border-box;
+}
+
+.bar span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+span.small {
+  font-size: smaller;
+  color: #767676;
+}
+
+.songs {
+  margin: 1vmax auto;
+  width: 100vmin;
+  min-width: 80vw;
+}
+
+.songs > img {
+  width: 100vmin;
+  height: 100vmin;
+  min-width: 80vw;
+  min-height: 80vw;
+  margin: -1vmax 0;
+}
+
+button.batch-add {
+  position: relative;
+  right: -75%;
+  height: 5em;
+  width: 5em;
+  margin-top: -2.5em;
+  background: #ff5722;
+  border: none;
+  border-radius: 100%;
+  outline: none;
+}
+button.batch-add:active {
+  background: #c7481f;
+}
+button.batch-add:after {
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: 1.47em;
+  left: 1.95em;
+  border-top: 1em solid transparent;
+  border-bottom: 1em solid transparent;
+  border-left: 1.6em solid white;
+}
+
+.songs > span {
+  display: block;
+  padding: 0em 1em 1em;
+  color: #767676;
+}
+
+.albums > span {
+  width: 100%;
+  text-align: center;
+  padding: 0.5em;
+  color: #767676;
+}
+
+.songs .song {
+  height: 10vmax;
+  padding: 1vh 4vw;
+  margin: 0 3vw;
+  box-sizing: border-box;
+  display: flex;
+  background: white;
+}
+.songs .song:active {
+  background: #ececec;
+}
+
+.songs .song img {
+  height: 8vmax;
+  width: 8vmax;
+  background: #eee;
+  box-sizing: content-box;
+}
+
+.songs .song .bar {
+  width: 50vmin;
+  flex-grow: 1;
+  margin: auto 3vw;
+}
+
+.songs .song.active .bar span:first-child {
+  font-weight: 500;
+}
+
+#player {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: #fefefe;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  touch-action: none;
+  overscroll-behavior: contain;
+  transform: translateY(calc(100vh - 10vmax + 1px));
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+#player.hidden {
+  transform: translateY(105vh);
+  transition: none;
+}
+#player.hidden #current-thumb, #player.hidden button {
+  opacity: 1;
+}
+#player.open {
+  transform: none;
+}
+#player.open #player-bar button {
+  display: none;
+}
+
+#player #player-bar {
+  height: 10vmax;
+  display: flex;
+  flex-shrink: 0;
+  box-shadow: 0 0px 5px rgba(0, 0, 0, .7);
+  z-index: 99;
+}
+
+#current-thumb, #player button {
+  width: 8vmax;
+  height: 8vmax;
+  margin: auto 1vmax;
+}
+#player button {
+  background: transparent;
+  outline: none;
+  border: none;
+  padding: 0;
+  position: relative;
+  flex-shrink: 0;
+}
+#player button.play:after {
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: 1.2vmax;
+  left: 2.5vmax;
+  border-top: 2.6vmax solid transparent;
+  border-bottom: 2.6vmax solid transparent;
+  border-left: 4vmax solid black;
+}
+#player button.prev:before {
+  content: "";
+  height: 4vmax;
+  width: 0.8vmax;
+  background: black;
+  position: absolute;
+  top: 2vmax;
+  left: 2vmax;
+}
+#player button.prev:after {
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: 2vmax;
+  left: 2.5vmax;
+  border-top: 2vmax solid transparent;
+  border-bottom: 2vmax solid transparent;
+  border-right: 3vmax solid black;
+}
+#player button.prev[disabled]:before {
+  background: #b7b7b7;
+}
+#player button.prev[disabled]:after {
+  border-right-color: #b7b7b7;
+}
+#player button.next:before {
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  top: 2vmax;
+  right: 2.5vmax;
+  border-top: 2vmax solid transparent;
+  border-bottom: 2vmax solid transparent;
+  border-left: 3vmax solid black;
+}
+#player button.next:after {
+  content: "";
+  height: 4vmax;
+  width: 0.8vmax;
+  background: black;
+  position: absolute;
+  top: 2vmax;
+  right: 2vmax;
+}
+#player button.next[disabled]:before {
+  border-left-color: #b7b7b7;
+}
+#player button.next[disabled]:after {
+  background: #b7b7b7;
+}
+#player button.pause:before, #player button.pause:after {
+  content: "";
+  height: 5vmax;
+  width: 1.3vmax;
+  background: black;
+  position: absolute;
+  top: 1.5vmax;
+  left: 2vmax;
+}
+#player button.pause:after {
+  left: initial;
+  right: 2vmax;
+}
+
+#queue-manager {
+  display: flex;
+}
+#queue-manager > button {
+  margin: 0;
+  font-size: 0.8em;
+  flex-grow: 1
+}
+#queue-manager > button:active {
+  background: #d2d2d2;
+}
+
+#player .song button.remove {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 100%;
+}
+#player .song button.remove:active {
+  background: #d2d2d2;
+}
+.song button.remove:before, .song button.remove:after {
+  content: "";
+  height: 1.2em;
+  width: 0.2em;
+  background: black;
+  position: absolute;
+  top: 0.6em;
+  left: 1.18em;
+  transform: rotate(-45deg);
+}
+.song button.remove:after {
+  left: initial;
+  right: 1.12em;
+  transform: rotate(45deg);
+}
+#player-bar > .bar {
+  flex-grow: 1;
+  margin: auto;
+  overflow: hidden;
+}
+
+#player #queue {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin: 0;
+}
+
+#player #player-controls {
+  height: 12vmax;
+  flex-shrink: 0;
+  position: relative;
+}
+#player-controls .bar {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+#player-controls button.play, #player-controls button.pause {
+  background: #ff5722;
+  border-radius: 100vmax;
+}
+#player-controls button.play:after {
+  top: 1.8vmax;
+  left: 3vmax;
+  border-left: 3vmax solid white;
+  border-top: 2.2vmax solid transparent;
+  border-bottom: 2.2vmax solid transparent;
+}
+#player-controls button.pause:before, #player-controls button.pause:after {
+  background: white;
+  height: 4vmax;
+  width: 1vmax;
+  top: 2vmax;
+  left: 2.3vmax;
+}
+#player-controls button.pause:after {
+  left: initial;
+  right: 2.3vmax;
+}
+
+#seekbar {
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+  margin: 0;
+  display: block;
+  height: 0px;
+}
+#seekbar::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border: none;
+  border-radius: 30px;
+  background: #ff5722;
+  margin-top: -5px;
+}
+#seekbar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 16px;
+  width: 16px;
+  border-radius: 30px;
+  background: #ff5722;
+  margin-top: -5px;
+}
+#seekbar::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  background: #ff5722;
+}
+#seekbar::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  background: #ff5722;
+}
+#seekbar:focus {
+  outline: none;
+}
+
+#time-progress, #time-duration {
+  min-width: 40px;
+  margin: 10px;
+}
+#time-duration {
+  text-align: right;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0px 0px 0px 0px grey; }
+  100% { box-shadow: 0px 0px 0px 4px transparent; }
+}
+
+body.playing .song.active img {
+  animation-duration: 0.4s;
+  animation-name: pulse;
+  animation-iteration-count: infinite;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#FF5722">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Description" content="A music streaming app">
+    <title>Music</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="icon" sizes="192x192" href="/img/icons-192.png">
+    <link rel="apple-touch-icon" href="/img/icons-192.png">
+    <script defer src="js/main.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li id="back-button"><div></div></li>
+          <li id="back-gap"></li>
+          <li id="artist-tab" data-page="artists"><a>ARTISTS</a></li>
+          <li id="album-tab" data-page="albums"><a>ALBUMS</a></li>
+          <li id="song-tab" data-page="songs"><a>SONGS</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main></main>
+    <section id="player" class="hidden">
+      <section id="player-bar">
+        <img id="current-thumb" aria-label="Currently playing cover">
+        <div class="bar">
+          <span></span>
+          <span class="small"></span>
+        </div>
+        <button class="play" aria-label="play"></button>
+      </section>
+      <section id="queue" class="songs">
+        <div id="queue-manager">
+          <button class="shuffle">SHUFFLE</button>
+          <button class="clear">CLEAR</button>
+        </div>
+      </section>
+      <section id="player-controls">
+        <input id="seekbar" type="range" value="0" step="any" aria-label="seek bar">
+        <div class="bar">
+          <div id="time-progress"><span class="small"></span></div>
+          <button class="prev" aria-label="previous"></button>
+          <button class="play" aria-label="play"></button>
+          <button class="next" aria-label="next"></button>
+          <div id="time-duration"><span class="small"></span></div>
+        </div>
+      </section>
+    </section>
+  </body>
+</html>
