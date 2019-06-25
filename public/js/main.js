@@ -28,6 +28,7 @@ let lazyloader = new IntersectionObserver((entries, observer) => {
 let player = $('#player')[0]
 let playerBar = $('#player-bar')[0]
 let seekbar = $('#seekbar')[0]
+let main = $('main')[0]
 
 // Patch the player-functionality we need into an Audio instance
 let audio = new Audio()
@@ -175,7 +176,6 @@ let render_timer = false
 let render_generic = (data, type, builder) => {
   clearInterval(render_timer)
   lazyloader.disconnect()
-  let main = $('main')[0]
   main.className = `${type}s`
   while (main.lastChild) main.removeChild(main.lastChild)
   let renderer = () => {
@@ -218,7 +218,7 @@ let render_albums = (data, artist) => {
   if (artist) {
     let a = $.create('span')
     a.append(document.createTextNode(artist))
-    $('main')[0].prepend(a)
+    main.prepend(a)
   }
 }
 
@@ -243,9 +243,9 @@ let render_songs = (data, art) => {
     b.addEventListener('click', ev => $('main .song').forEach(el => audio.push({...el.meta})))
     let c = $.create('span')
     c.append(document.createTextNode(art[1]))
-    $('main')[0].prepend(c)
-    $('main')[0].prepend(b)
-    $('main')[0].prepend(a)
+    main.prepend(c)
+    main.prepend(b)
+    main.prepend(a)
   }
 }
 
@@ -254,10 +254,10 @@ let nav_artists = (hpath, cb) => {
   $('header nav ul li#artist-tab')[0].className = 'active'
   if (hpath.length) {
     fetch(`/api/list/albums/${hpath.join('/')}`).then(res => res.json()).then(data => {
-      render_albums(data, data[0].artist)
-    }).then(cb)
+      cb(render_albums(data, data[0].artist))
+    })
   } else {
-    fetch('/api/list/artists').then(res => res.json()).then(render_artists).then(cb)
+    fetch('/api/list/artists').then(res => res.json()).then(data => cb(render_artists(data)))
   }
 }
 
@@ -266,17 +266,17 @@ let nav_albums = (hpath, cb) => {
   $('header nav ul li#album-tab')[0].className = 'active'
   if (hpath.length) {
     fetch(`/api/list/songs/${hpath.join('/')}`).then(res => res.json()).then(data => {
-      render_songs(data, [data[0].artist, data[0].album])
-    }).then(cb)
+      cb(render_songs(data, [data[0].artist, data[0].album]))
+    })
   } else {
-    fetch('/api/list/albums').then(res => res.json()).then(render_albums).then(cb)
+    fetch('/api/list/albums').then(res => res.json()).then(data => cb(render_albums(data)))
   }
 }
 
 let nav_songs = (hpath, cb) => {
   $('header nav ul li').forEach(el => el.className = '')
   $('header nav ul li#song-tab')[0].className = 'active'
-  fetch('/api/list/songs').then(res => res.json()).then(render_songs).then(cb)
+  fetch('/api/list/songs').then(res => res.json()).then(data => cb(render_songs(data)))
 }
 
 let queue_push = song => {
@@ -353,7 +353,10 @@ let pop_handler = ev => {
     '#songs': nav_songs
   })[hashpath[0]] || (() => {}))(hashpath.slice(1), scroller)
 }
-$('#back-button')[0].addEventListener('click', ev => history.back())
+$('#back-button')[0].addEventListener('click', ev => {
+  while (main.lastChild) main.removeChild(main.lastChild)
+  history.back()
+})
 
 window.addEventListener('popstate', pop_handler)
 pop_handler()

@@ -1,8 +1,5 @@
 let cache_list = new Set([
   '/',
-  '/#artists',
-  '/#albums',
-  '/#songs',
   '/api/list/artists',
   '/api/list/albums',
   '/api/list/songs',
@@ -13,28 +10,30 @@ let cache_list = new Set([
 
 let cache_exts = new Set(['js', 'css'])
 
-/*
 self.addEventListener('install', event => {
-  event.waitUntil(async () => {
-    let cache = await caches.open('static')
-    cache.addAll([...cache_list])
-  })
+  event.waitUntil(
+    caches.open('static').then(cache =>
+      cache.addAll([...cache_list])
+    )
+  )
 })
-*/
 
 self.addEventListener('fetch', event => {
   let path = `/${event.request.url.split('/').slice(3).join('/')}`
   let ext = (path.match(/\.(.+)$/)||[])[1]
-  if (!cache_list.has(path) && !cache_exts.has(ext)) return
+  if (!(cache_list.has(path) || cache_exts.has(ext) || path.startsWith('/api/list/'))) return
   event.respondWith(
-    fetch(event.request).then(res => {
-      let res_cache = res.clone()
-      caches.open('static').then(cache => cache.put(event.request, res_cache))
-      return res
-    }).catch(() => {
-      return caches.open('static')
-        .then(cache => cache.match(event.request))
-        .then(res => res || Promise.reject('no-match'))
-    })
+    caches.open('static').then(cache =>
+      cache.match(event.request).then(cached =>
+        (cached || Promise.reject('no-match'))
+      )
+    ).catch(() => new Promise((a,r) => fetch(event.request).then(a,r)))
+  )
+  event.waitUntil(
+    caches.open('static').then(cache =>
+      fetch(event.request).then(res =>
+        cache.put(event.request, res)
+      )
+    )
   )
 })
