@@ -61,6 +61,8 @@ audio.set = function(song) {
   if (!x.scrollIntoViewIfNeeded) x.scrollIntoViewIfNeeded = x.scrollIntoView
   x.scrollIntoViewIfNeeded()
   if (player.className == 'hidden') player.className = ''
+  localStorage.setItem('active', audio.queue.indexOf(audio.active))
+  localStorage.setItem('position', '0')
 }
 audio.prev = function() {
   if (this.queue.length < 2) return false
@@ -86,6 +88,7 @@ audio.push = function(song) {
     .map(encodeURIComponent).join('/')}`)
   audio.precache()
   controls_update()
+  localStorage.setItem('queue', JSON.stringify(audio.queue))
 }
 audio.delete = function(song) {
   let i = this.queue.indexOf(song)
@@ -101,6 +104,8 @@ audio.delete = function(song) {
   if (i < 0) return
   this.queue.splice(i, 1)
   controls_update()
+  localStorage.setItem('queue', JSON.stringify(audio.queue))
+  localStorage.setItem('active', audio.queue.indexOf(audio.active))
 }
 audio.precache = function() {
   let song = this.queue[this.queue.indexOf(this.active)+1]
