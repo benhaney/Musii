@@ -125,11 +125,23 @@ let controls_update = () => {
   }
 }
 
+let buffer_update = () => {
+  let gradient = Array.from(audio.buffered)
+    .map((_, i) => [audio.buffered.start(i), audio.buffered.end(i)].map(x => x / audio.duration * 100))
+    .map(x => `var(--seekbar-color-light) ${x[0]}%, var(--seekbar-color) ${x[0]}% ${x[1]}%, var(--seekbar-color-light) ${x[1]}%`)
+    .join(', ')
+  seekbar.style.setProperty(
+    '--seekbar-track-bg',
+    `linear-gradient(to right, var(--seekbar-color-light) 0%, ${gradient + (gradient && ',')} var(--seekbar-color-light) 100%)`
+  )
+}
+
 // Audio event listeners
 audio.addEventListener('ended', ev => audio.next())
 audio.addEventListener('playing', ev => {
   $('button.play').forEach(el => el.className = 'pause')
   document.body.className = 'playing'
+  buffer_update()
 })
 audio.addEventListener('pause', ev => {
   $('button.pause').forEach(el => el.className = 'play')
@@ -154,6 +166,7 @@ audio.addEventListener('error', ev => {
   }, 200)
 })
 audio.addEventListener('canplaythrough', ev => audio.precache())
+audio.addEventListener('progress', buffer_update)
 
 seekbar.addEventListener('touchstart', ev => seekbar.dragging = true, { passive: true })
 seekbar.addEventListener('touchend', ev => seekbar.dragging = false, { passive: true })

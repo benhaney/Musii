@@ -13,10 +13,12 @@ body {
   margin: 0;
   margin-bottom: 11vmax;
   font-family: 'Roboto', arial, 'Noto Sans Japanese', sans-serif;
+  --theme-color: #ff5722;
+  --theme-color-light: #ff9762;
 }
 
 header {
-  background: #ff5722;
+  background: var(--theme-color);
   color: white;
 }
 
@@ -140,7 +142,7 @@ button.batch-add {
   height: 5em;
   width: 5em;
   margin-top: -2.5em;
-  background: #ff5722;
+  background: var(--theme-color);
   border: none;
   border-radius: 100%;
   outline: none;
@@ -416,13 +418,16 @@ button.batch-add:after {
   margin: 0;
   display: block;
   height: 0px;
+  --seekbar-color: var(--theme-color);
+  --seekbar-color-light: var(--theme-color-light);
+  --seekbar-track-bg: var(--seekbar-color-light);
 }
 #seekbar::-moz-range-thumb {
   height: 16px;
   width: 16px;
   border: none;
   border-radius: 30px;
-  background: #ff5722;
+  background: var(--seekbar-color);
   margin-top: -5px;
 }
 #seekbar::-webkit-slider-thumb {
@@ -430,18 +435,18 @@ button.batch-add:after {
   height: 16px;
   width: 16px;
   border-radius: 30px;
-  background: #ff5722;
+  background: var(--seekbar-color);
   margin-top: -5px;
 }
 #seekbar::-moz-range-track {
   width: 100%;
   height: 5px;
-  background: #ff5722;
+  background: var(--seekbar-track-bg);
 }
 #seekbar::-webkit-slider-runnable-track {
   width: 100%;
   height: 5px;
-  background: #ff5722;
+  background: var(--seekbar-track-bg);
 }
 #seekbar:focus {
   outline: none;
