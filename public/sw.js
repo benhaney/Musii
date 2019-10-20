@@ -19,7 +19,7 @@ self.addEventListener('install', event => {
 })
 
 self.addEventListener('fetch', event => {
-  let path = `/${event.request.url.split('/').slice(3).join('/')}`
+  let path = `/${event.request.url.split('#')[0].split('/').slice(3).join('/')}`
   let ext = (path.match(/\.(.+)$/)||[])[1]
   if (!(cache_list.has(path) || cache_exts.has(ext) || path.startsWith('/api/list/'))) return
   event.respondWith(
