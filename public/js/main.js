@@ -138,13 +138,18 @@ let buffer_update = () => {
 
 // Audio event listeners
 audio.addEventListener('ended', ev => audio.next())
+audio.addEventListener('waiting', ev => {
+  $('button.play, button.pause').forEach(el => el.className = 'buffering')
+  document.body.className = ''
+  buffer_update()
+})
 audio.addEventListener('playing', ev => {
-  $('button.play').forEach(el => el.className = 'pause')
+  $('button.play, button.buffering').forEach(el => el.className = 'pause')
   document.body.className = 'playing'
   buffer_update()
 })
 audio.addEventListener('pause', ev => {
-  $('button.pause').forEach(el => el.className = 'play')
+  $('button.pause, button.buffering').forEach(el => el.className = 'play')
   document.body.className = ''
 })
 audio.addEventListener('loadedmetadata', ev => {

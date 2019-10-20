@@ -1,5 +1,5 @@
-@import url('/css/roboto.css');
 
+@import url('/css/roboto.css');
 *::selection {
   background: none;
 }
@@ -15,6 +15,8 @@ body {
   font-family: 'Roboto', arial, 'Noto Sans Japanese', sans-serif;
   --theme-color: #ff5722;
   --theme-color-light: #ff9762;
+  --button-fg: black;
+  --button-bg: white;
 }
 
 header {
@@ -254,17 +256,6 @@ button.batch-add:after {
   position: relative;
   flex-shrink: 0;
 }
-#player button.play:after {
-  content: "";
-  height: 0;
-  width: 0;
-  position: absolute;
-  top: 1.2vmax;
-  left: 2.5vmax;
-  border-top: 2.6vmax solid transparent;
-  border-bottom: 2.6vmax solid transparent;
-  border-left: 4vmax solid black;
-}
 #player button.prev:before {
   content: "";
   height: 4vmax;
@@ -317,18 +308,25 @@ button.batch-add:after {
 #player button.next[disabled]:after {
   background: #b7b7b7;
 }
-#player button.pause:before, #player button.pause:after {
-  content: "";
-  height: 5vmax;
-  width: 1.3vmax;
-  background: black;
-  position: absolute;
-  top: 1.5vmax;
-  left: 2vmax;
+#player button.play {
+  background:
+    no-repeat linear-gradient(211deg, var(--button-bg) 0% 36%, transparent 38%) 50% 20% / 71% 100%,
+    no-repeat linear-gradient(331deg, var(--button-bg) 0% 36%, transparent 38%) 50% 80% / 71% 100%,
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 68% 50% / 50% 95%,
+    var(--button-bg)
 }
-#player button.pause:after {
-  left: initial;
-  right: 2vmax;
+#player button.pause {
+  background:
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 30% 50% / 15% 55%,
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 70% 50% / 15% 55%,
+    var(--button-bg);
+}
+#player button.buffering {
+  background:
+    radial-gradient(8% 8% at 30% 50%, var(--button-fg) 80%, transparent),
+    radial-gradient(8% 8% at 50% 50%, var(--button-fg) 80%, transparent),
+    radial-gradient(8% 8% at 70% 50%, var(--button-fg) 80%, transparent),
+    var(--button-bg);
 }
 
 #queue-manager {
@@ -388,27 +386,12 @@ button.batch-add:after {
   display: flex;
   justify-content: space-between;
 }
-#player-controls button.play, #player-controls button.pause {
-  background: #ff5722;
+#player-controls button.play,
+#player-controls button.pause,
+#player-controls button.buffering {
   border-radius: 100vmax;
-}
-#player-controls button.play:after {
-  top: 1.8vmax;
-  left: 3vmax;
-  border-left: 3vmax solid white;
-  border-top: 2.2vmax solid transparent;
-  border-bottom: 2.2vmax solid transparent;
-}
-#player-controls button.pause:before, #player-controls button.pause:after {
-  background: white;
-  height: 4vmax;
-  width: 1vmax;
-  top: 2vmax;
-  left: 2.3vmax;
-}
-#player-controls button.pause:after {
-  left: initial;
-  right: 2.3vmax;
+  --button-bg: var(--theme-color);
+  --button-fg: white;
 }
 
 #seekbar {
