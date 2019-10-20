@@ -368,7 +368,6 @@ $('header nav ul li[data-page]').forEach(el => {
 // Navigation logic
 let pop_handler = ev => {
   let scroller = (ev && ev.state && ev.state.scroll) ? (() => {
-    console.log(`scrolling to ${ev.state.scroll}`)
     document.documentElement.scrollTop = ev.state.scroll
   }) : (() => {})
   let hashpath = window.location.hash.split('/').filter(x => x)
