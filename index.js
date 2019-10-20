@@ -52,6 +52,7 @@ let compress_audio = (src, dest) => {
 
 app.get('/', (req, res) => {
   res.type('html')
+  res.set('Link', ['/css/style.css; rel=preload; as=style', '/js/main.js; rel=preload; as=script'])
   fs.readFile('public/index.html').then(index => res.end(index.toString()))
 })
 
