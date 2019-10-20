@@ -13,15 +13,16 @@ body {
   margin: 0;
   margin-bottom: 11vmax;
   font-family: 'Roboto', arial, 'Noto Sans Japanese', sans-serif;
-  --theme-color: #ff5722;
-  --theme-color-light: #ff9762;
-  --button-fg: black;
-  --button-bg: white;
+  --theme-color-bg: #ff5722;
+  --theme-color-bg-light: #ff9762;
+  --theme-color-fg: white;
+  --button-bg: var(--theme-color-bg);
+  --button-fg: var(--theme-color-fg);
 }
 
 header {
-  background: var(--theme-color);
-  color: white;
+  background: var(--theme-color-bg);
+  color: var(--theme-color-fg);
 }
 
 header nav ul {
@@ -71,6 +72,7 @@ header nav ul li.active {
   border: 1px solid white;
   position: relative;
   top: calc(-0.375em - 1px);
+
 }
 
 .albums, .artists {
@@ -144,24 +146,16 @@ button.batch-add {
   height: 5em;
   width: 5em;
   margin-top: -2.5em;
-  background: var(--theme-color);
   border: none;
   border-radius: 100%;
   outline: none;
+  background:
+    no-repeat linear-gradient(white 0% 100%) 50% 50% / 10% 45%,
+    no-repeat linear-gradient(white 0% 100%) 50% 50% / 45% 10%,
+    var(--theme-color-bg);
 }
 button.batch-add:active {
-  background: #c7481f;
-}
-button.batch-add:after {
-  content: "";
-  height: 0;
-  width: 0;
-  position: absolute;
-  top: 1.47em;
-  left: 1.95em;
-  border-top: 1em solid transparent;
-  border-bottom: 1em solid transparent;
-  border-left: 1.6em solid white;
+  filter: brightness(0.8);
 }
 
 .songs > span {
@@ -241,6 +235,8 @@ button.batch-add:after {
   flex-shrink: 0;
   box-shadow: 0 0px 5px rgba(0, 0, 0, .7);
   z-index: 99;
+  --button-bg: white;
+  --button-fg: black;
 }
 
 #current-thumb, #player button {
@@ -256,69 +252,37 @@ button.batch-add:after {
   position: relative;
   flex-shrink: 0;
 }
-#player button.prev:before {
-  content: "";
-  height: 4vmax;
-  width: 0.8vmax;
-  background: black;
-  position: absolute;
-  top: 2vmax;
-  left: 2vmax;
+#player button.prev {
+  --this-color: black;
+  background:
+    no-repeat linear-gradient(var(--this-color) 0% 100%) 25% 50% / 10% 51%,
+    no-repeat linear-gradient(145deg, white 0% 36%, transparent 38%) 70% 20% / 71% 100%,
+    no-repeat linear-gradient(35deg, white 0% 36%, transparent 38%) 70% 80% / 71% 100%,
+    no-repeat linear-gradient(var(--this-color) 0% 100%) 50% 50% / 35% 95%
 }
-#player button.prev:after {
-  content: "";
-  height: 0;
-  width: 0;
-  position: absolute;
-  top: 2vmax;
-  left: 2.5vmax;
-  border-top: 2vmax solid transparent;
-  border-bottom: 2vmax solid transparent;
-  border-right: 3vmax solid black;
+#player button.next {
+  --this-color: black;
+  background:
+    no-repeat linear-gradient(var(--this-color) 0% 100%) 74% 50% / 10% 51%,
+    no-repeat linear-gradient(-35deg, white 0% 36%, transparent 38%) 30% 20% / 71% 100%,
+    no-repeat linear-gradient(215deg, white 0% 36%, transparent 38%) 30% 80% / 71% 100%,
+    no-repeat linear-gradient(var(--this-color) 0% 100%) 50% 50% / 35% 95%
 }
-#player button.prev[disabled]:before {
-  background: #b7b7b7;
+#player button[disabled] {
+  --this-color: #b7b7b7;
 }
-#player button.prev[disabled]:after {
-  border-right-color: #b7b7b7;
-}
-#player button.next:before {
-  content: "";
-  height: 0;
-  width: 0;
-  position: absolute;
-  top: 2vmax;
-  right: 2.5vmax;
-  border-top: 2vmax solid transparent;
-  border-bottom: 2vmax solid transparent;
-  border-left: 3vmax solid black;
-}
-#player button.next:after {
-  content: "";
-  height: 4vmax;
-  width: 0.8vmax;
-  background: black;
-  position: absolute;
-  top: 2vmax;
-  right: 2vmax;
-}
-#player button.next[disabled]:before {
-  border-left-color: #b7b7b7;
-}
-#player button.next[disabled]:after {
-  background: #b7b7b7;
-}
+
 #player button.play {
   background:
-    no-repeat linear-gradient(211deg, var(--button-bg) 0% 36%, transparent 38%) 50% 20% / 71% 100%,
-    no-repeat linear-gradient(331deg, var(--button-bg) 0% 36%, transparent 38%) 50% 80% / 71% 100%,
-    no-repeat linear-gradient(var(--button-fg) 0% 100%) 68% 50% / 50% 95%,
-    var(--button-bg)
+    no-repeat linear-gradient(215deg, var(--button-bg) 0% 36%, transparent 38%) 50% 20% / 71% 100%,
+    no-repeat linear-gradient(-35deg, var(--button-bg) 0% 36%, transparent 38%) 50% 80% / 71% 100%,
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 70% 50% / 44% 95%,
+    var(--button-bg);
 }
 #player button.pause {
   background:
-    no-repeat linear-gradient(var(--button-fg) 0% 100%) 30% 50% / 15% 55%,
-    no-repeat linear-gradient(var(--button-fg) 0% 100%) 70% 50% / 15% 55%,
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 32% 50% / 13% 50%,
+    no-repeat linear-gradient(var(--button-fg) 0% 100%) 68% 50% / 13% 50%,
     var(--button-bg);
 }
 #player button.buffering {
@@ -345,25 +309,15 @@ button.batch-add:after {
   width: 2.5em;
   height: 2.5em;
   border-radius: 100%;
+  transform: rotate(45deg);
+  background:
+    no-repeat linear-gradient(black 0 100%) 50% 50% / 50% 7%,
+    no-repeat linear-gradient(black 0 100%) 50% 50% / 7% 50%;
 }
 #player .song button.remove:active {
   background: #d2d2d2;
 }
-.song button.remove:before, .song button.remove:after {
-  content: "";
-  height: 1.2em;
-  width: 0.2em;
-  background: black;
-  position: absolute;
-  top: 0.6em;
-  left: 1.18em;
-  transform: rotate(-45deg);
-}
-.song button.remove:after {
-  left: initial;
-  right: 1.12em;
-  transform: rotate(45deg);
-}
+
 #player-bar > .bar {
   flex-grow: 1;
   margin: auto;
@@ -390,8 +344,6 @@ button.batch-add:after {
 #player-controls button.pause,
 #player-controls button.buffering {
   border-radius: 100vmax;
-  --button-bg: var(--theme-color);
-  --button-fg: white;
 }
 
 #seekbar {
@@ -401,8 +353,8 @@ button.batch-add:after {
   margin: 0;
   display: block;
   height: 0px;
-  --seekbar-color: var(--theme-color);
-  --seekbar-color-light: var(--theme-color-light);
+  --seekbar-color: var(--theme-color-bg);
+  --seekbar-color-light: var(--theme-color-bg-light);
   --seekbar-track-bg: var(--seekbar-color-light);
 }
 #seekbar::-moz-range-thumb {
