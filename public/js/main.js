@@ -56,6 +56,7 @@ audio.set = function(song) {
     })
   }
   controls_update()
+  buffer_update()
   $('#queue .song').forEach(el => el.className = el.meta == audio.active ? 'song active' : 'song')
   let x = $('#queue .song.active')[0]
   if (!x.scrollIntoViewIfNeeded) x.scrollIntoViewIfNeeded = x.scrollIntoView
@@ -159,6 +160,7 @@ audio.addEventListener('loadedmetadata', ev => {
 audio.addEventListener('timeupdate', ev => {
   if (!seekbar.dragging) seekbar.value = audio.currentTime
   $('#time-progress > span')[0].innerText = displayTime(audio.currentTime)
+  localStorage.setItem('position', audio.currentTime)
 })
 audio.addEventListener('error', ev => {
   console.log(ev)
@@ -436,7 +438,9 @@ window.addEventListener('unload', ev => {
 try {
   audio.queue = JSON.parse(localStorage.getItem('queue')) || []
   build_queue()
+  let pos = +localStorage.getItem('position')
   audio.set(audio.queue[+localStorage.getItem('active')])
-  audio.currentTime = +localStorage.getItem('position')
+  audio.currentTime = pos
+  localStorage.setItem('position', audio.currentTime)
   player.className = ''
 } catch {}
