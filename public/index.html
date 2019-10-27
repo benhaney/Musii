@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="/img/icons-192.png">
     <script defer src="js/main.js"></script>
   </head>
-  <body>
+  <body data-state="paused">
     <header>
       <nav>
         <ul>
@@ -32,7 +32,7 @@
           <span></span>
           <span class="small"></span>
         </div>
-        <button class="play" aria-label="play"></button>
+        <button class="control" aria-label="play"></button>
       </section>
       <section id="queue" class="songs">
         <div id="queue-manager">
@@ -45,7 +45,7 @@
         <div class="bar">
           <div id="time-progress"><span class="small"></span></div>
           <button class="prev" aria-label="previous"></button>
-          <button class="play" aria-label="play"></button>
+          <button class="control" aria-label="play"></button>
           <button class="next" aria-label="next"></button>
           <div id="time-duration"><span class="small"></span></div>
         </div>

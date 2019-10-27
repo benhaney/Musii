@@ -140,18 +140,15 @@ let buffer_update = () => {
 // Audio event listeners
 audio.addEventListener('ended', ev => audio.next())
 audio.addEventListener('waiting', ev => {
-  $('button.play, button.pause').forEach(el => el.className = 'buffering')
-  document.body.className = ''
+  document.body.setAttribute('data-state', 'buffering')
   buffer_update()
 })
 audio.addEventListener('playing', ev => {
-  $('button.play, button.buffering').forEach(el => el.className = 'pause')
-  document.body.className = 'playing'
+  document.body.setAttribute('data-state', 'playing')
   buffer_update()
 })
 audio.addEventListener('pause', ev => {
-  $('button.pause, button.buffering').forEach(el => el.className = 'play')
-  document.body.className = ''
+  document.body.setAttribute('data-state', 'paused')
 })
 audio.addEventListener('loadedmetadata', ev => {
   seekbar.max = audio.duration
@@ -179,7 +176,7 @@ seekbar.addEventListener('touchstart', ev => seekbar.dragging = true, { passive:
 seekbar.addEventListener('touchend', ev => seekbar.dragging = false, { passive: true })
 seekbar.addEventListener('change', ev => audio.currentTime = seekbar.value)
 
-$('button.play').forEach(el => el.addEventListener('click', ev => {
+$('button.control').forEach(el => el.addEventListener('click', ev => {
   if (audio.paused) { audio.play() } else { audio.pause() }
   ev.stopPropagation()
 }))
@@ -193,7 +190,7 @@ $('button.next').forEach(el => el.addEventListener('click', ev => {
 }))
 
 $('#player-bar')[0].addEventListener('click', ev => {
-  player.className = player.className ? '' : 'open'
+  document.body.setAttribute('data-player',  document.body.getAttribute('data-player') == 'open' ? 'closed' : 'open')
 })
 
 // Functions for building pages
@@ -420,12 +417,10 @@ playerBar.addEventListener('touchend', ev => {
   player.style.transition = ''
   let diffMin = window.innerHeight / 10
   let diff = ev.changedTouches[0].clientY - player.touchStartAbs
-  if (diff < -diffMin) player.className = 'open'
-  if (diff > diffMin) player.className = ''
+  if (diff < -diffMin) body.setAttribute('data-player', 'open')
+  if (diff > diffMin) body.setAttribute('data-player', 'closed')
   player.style.transform = ''
 }, { passive: true })
-
-player.addEventListener('touchmove', ev => ev.preventDefault(), { passive: true })
 
 // Save and restore player queue between loads
 window.addEventListener('unload', ev => {
