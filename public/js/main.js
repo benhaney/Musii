@@ -221,8 +221,15 @@ let render_artists = data => {
     el.innerHTML = `
     <div class="bar">
       <span>${d.artist}</span>
+      <button class="batch-add"></button>
     </div>`
     el.addEventListener('click', ev => navto(`#artists/${d.artist}`))
+    el.querySelector('button.batch-add').addEventListener('click', ev => {
+      fetch(`/api/list/songs/${d.artist}`).then(res => res.json()).then(data => {
+        data.forEach(song => audio.push(song))
+      })
+      ev.stopPropagation()
+    })
   })
   //$('.artist img').forEach(el => lazyloader.observe(el))
 }
