@@ -113,6 +113,23 @@ header nav ul li.active {
   background: white;
   padding: 5px 8px;
   box-sizing: border-box;
+  display: grid;
+  grid-template-areas: "primary button"
+                       "secondary secondary";
+  grid-template-columns: 1fr auto;
+}
+
+.album .bar span, .artist .bar span {
+  grid-area: primary;
+}
+.album .bar span.small {
+  grid-area: secondary;
+}
+.album .bar button, .artist .bar button {
+  grid-area: button;
+  font-size: xx-small;
+  right: 0;
+  margin-top: -3em;
 }
 
 .bar span {

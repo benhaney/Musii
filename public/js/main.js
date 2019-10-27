@@ -233,8 +233,15 @@ let render_albums = (data, artist) => {
     <div class="bar">
       <span>${d.album}</span>
       <span class="small">${d.artist}</span>
+      <button class="batch-add"></button>
     </div>`
     el.addEventListener('click', ev => navto(`#albums/${d.artist}/${d.album}`))
+    el.querySelector('button.batch-add').addEventListener('click', ev => {
+      fetch(`/api/list/songs/${d.artist}/${d.album}`).then(res => res.json()).then(data => {
+        data.forEach(song => audio.push(song))
+      })
+      ev.stopPropagation()
+    })
     lazyloader.observe(el.firstElementChild)
   })
   if (artist) {
