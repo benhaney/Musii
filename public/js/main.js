@@ -7,6 +7,8 @@ let displayTime = t => `${~~(t/60)}:${(Math.round(t)%60+'').padStart(2, '0')}`
 let save_scroll = () => history.replaceState({scroll: window.scrollY}, undefined, window.location)
 let navto = h => (save_scroll(), window.location = h)
 
+let scroll_into_view = x => (x.scrollIntoViewIfNeeded || x.scrollIntoView)()
+
 // We have an event listener on DOM-based navigation for saving the current scroll position,
 // but if the user uses their back button or something else we can't catch before it happens,
 // we can't save the scroll position of the page they're leaving. When they go forward in history,
@@ -15,14 +17,16 @@ let navto = h => (save_scroll(), window.location = h)
 // "scrollend" event. We could attach it to "touchend" and assume the user must make a touch to
 // scroll, but this won't capture the end of momentum-scrolling. As much as I hate it, let's just
 // save the scroll position on an interval.
-window.setInterval(save_scroll, 500)
+window.setTimeout(() => window.setInterval(save_scroll, 500), 1000)
 
 // IntersectionObserver for lazy loading any image when it gets close to the viewport
 let lazyloader = new IntersectionObserver((entries, observer) => {
-  entries.forEach(e => {
-    e.target.src = (e.intersectionRatio > 0) ? e.target.attributes['data-src'].value : ''
-  })
-}, {rootMargin: '100%'})
+  window.requestIdleCallback(() => {
+    entries.forEach(e => {
+      e.target.src = (e.isIntersecting) ? e.target.attributes['data-src'].value : ''
+    })
+  }, {timeout: 1000})
+}, {rootMargin: '100% 0%'})
 
 // These get used frequently and don't change, so let's not call out to querySelectorAll each time.
 let player = $('#player')[0]
@@ -58,9 +62,7 @@ audio.set = function(song) {
   controls_update()
   buffer_update()
   $('#queue .song').forEach(el => el.className = el.meta == audio.active ? 'song active' : 'song')
-  let x = $('#queue .song.active')[0]
-  if (!x.scrollIntoViewIfNeeded) x.scrollIntoViewIfNeeded = x.scrollIntoView
-  x.scrollIntoViewIfNeeded()
+  scroll_into_view($('#queue .song.active')[0])
   if (player.className == 'hidden') player.className = ''
   localStorage.setItem('active', audio.queue.indexOf(audio.active))
   localStorage.setItem('position', '0')
@@ -191,6 +193,7 @@ $('button.next').forEach(el => el.addEventListener('click', ev => {
 
 $('#player-bar')[0].addEventListener('click', ev => {
   document.body.setAttribute('data-player',  document.body.getAttribute('data-player') == 'open' ? 'closed' : 'open')
+  scroll_into_view($('#queue .song.active')[0])
 })
 
 // Functions for building pages
@@ -431,8 +434,9 @@ playerBar.addEventListener('touchend', ev => {
   player.style.transition = ''
   let diffMin = window.innerHeight / 10
   let diff = ev.changedTouches[0].clientY - player.touchStartAbs
-  if (diff < -diffMin) body.setAttribute('data-player', 'open')
-  if (diff > diffMin) body.setAttribute('data-player', 'closed')
+  if (diff < -diffMin) document.body.setAttribute('data-player', 'open')
+  if (diff > diffMin) document.body.setAttribute('data-player', 'closed')
+  scroll_into_view($('#queue .song.active')[0])
   player.style.transform = ''
 }, { passive: true })
 
