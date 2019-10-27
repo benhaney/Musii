@@ -456,3 +456,31 @@ try {
   localStorage.setItem('position', audio.currentTime)
   player.className = ''
 } catch {}
+
+// Handle wakelocking
+if ('getWakeLock' in navigator) {
+  navigator.getWakeLock('system').then(wakelocker => {
+    wakelocker.addEventListener('activechange', () => {
+      //if (!wakelocker.active) alert(`wakelock: ${wakelocker.active}`)
+    })
+    let wakelock = undefined
+    let lock = () => {
+      if (wakelock) return
+      wakelock = wakelocker.createRequest()
+    }
+    let unlock = () => {
+      if (!wakelock) return
+      wakelock.cancel()
+      wakelock = undefined
+    }
+    let timer = undefined
+    audio.addEventListener('play', () => {
+      window.clearTimeout(timer)
+      lock()
+    })
+    audio.addEventListener('pause', () => {
+      window.clearTimeout(timer)
+      timer = window.setTimeout(unlock, 5000)
+    })
+  }).catch(console.log)
+}
