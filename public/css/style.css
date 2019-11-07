@@ -305,7 +305,7 @@ body[data-state="playing"] #player button.control {
     no-repeat linear-gradient(var(--button-fg) 0% 100%) 68% 50% / 13% 50%,
     var(--button-bg);
 }
-body[body-state="buffering"] #player button.control {
+body[data-state="buffering"] #player button.control {
   background:
     radial-gradient(8% 8% at 30% 50%, var(--button-fg) 80%, transparent),
     radial-gradient(8% 8% at 50% 50%, var(--button-fg) 80%, transparent),
