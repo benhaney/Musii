@@ -213,8 +213,17 @@ button.batch-add:active {
   margin: auto 3vw;
 }
 
+.songs .song.active {
+  background: #f8f8f8;
+  position: relative;
+}
 .songs .song.active .bar span:first-child {
   font-weight: 500;
+}
+body[data-state="playing"] .song.active img {
+  animation-duration: 0.4s;
+  animation-name: pulse;
+  animation-iteration-count: infinite;
 }
 
 #player {
@@ -414,12 +423,6 @@ body[data-state="buffering"] #player button.control {
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0px 0px 0px 0px grey; }
-  100% { box-shadow: 0px 0px 0px 4px transparent; }
-}
-
-body[data-state="playing"] .song.active img {
-  animation-duration: 0.4s;
-  animation-name: pulse;
-  animation-iteration-count: infinite;
+  0% { box-shadow: 0px 0px 0px 0vh grey; }
+  100% { box-shadow: 0px 0px 0px 1vh transparent; }
 }
