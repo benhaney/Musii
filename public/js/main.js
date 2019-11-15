@@ -62,7 +62,7 @@ audio.set = function(song) {
   controls_update()
   buffer_update()
   $('#queue .song').forEach(el => el.className = el.meta == audio.active ? 'song active' : 'song')
-  scroll_into_view($('#queue .song.active')[0])
+  $('#queue .song.active').forEach(scroll_into_view)
   if (player.className == 'hidden') player.className = ''
   localStorage.setItem('active', audio.queue.indexOf(audio.active))
   localStorage.setItem('position', '0')
@@ -101,6 +101,7 @@ audio.delete = function(song) {
     else {
       audio.pause()
       audio.src = '//'
+      document.body.setAttribute('data-player', 'closed')
       player.className = 'hidden'
     }
   }
@@ -193,7 +194,7 @@ $('button.next').forEach(el => el.addEventListener('click', ev => {
 
 $('#player-bar')[0].addEventListener('click', ev => {
   document.body.setAttribute('data-player',  document.body.getAttribute('data-player') == 'open' ? 'closed' : 'open')
-  scroll_into_view($('#queue .song.active')[0])
+  $('#queue .song.active').forEach(scroll_into_view)
 })
 
 // Functions for building pages
@@ -436,7 +437,7 @@ playerBar.addEventListener('touchend', ev => {
   let diff = ev.changedTouches[0].clientY - player.touchStartAbs
   if (diff < -diffMin) document.body.setAttribute('data-player', 'open')
   if (diff > diffMin) document.body.setAttribute('data-player', 'closed')
-  scroll_into_view($('#queue .song.active')[0])
+  $('#queue .song.active').forEach(scroll_into_view)
   player.style.transform = ''
 }, { passive: true })
 
