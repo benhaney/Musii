@@ -353,10 +353,38 @@ body[data-state="buffering"] #player button.control {
   overflow: hidden;
 }
 
-#player #queue {
+#player #queue-container {
   flex-grow: 1;
+  height: 0;
+  position: relative;
+}
+
+#player #lyrics {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 7%;
+  line-height: 1.5;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.25s ease;
+}
+
+body[data-lyrics="show"] #player #lyrics {
+  visibility: visible;
+  opacity: 1;
+}
+
+#player #queue {
   overflow-y: auto;
   margin: 0;
+  height: 100%;
 }
 
 #player #player-controls {
@@ -373,6 +401,27 @@ body[data-state="buffering"] #player button.control {
   border-radius: 100vmax;
 }
 
+#player-controls button.lyrics {
+  --this-fg: black;
+  --this-bg: white;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 1vmax;
+  height: 5vmax;
+  width: 5vmax;
+  background:
+    no-repeat linear-gradient(var(--this-fg) 0% 100%) 50% 32% / 50% 13%,
+    no-repeat linear-gradient(var(--this-fg) 0% 100%) 50% 68% / 50% 13%,
+    white
+}
+#player-controls button.lyrics:active {
+  filter: brightness(0.8);
+}
+#player-controls button.lyrics:disabled {
+  --this-fg: #ccc;
+}
+
 #seekbar {
   -webkit-appearance: none;
   width: 100%;
@@ -380,6 +429,8 @@ body[data-state="buffering"] #player button.control {
   margin: 0;
   display: block;
   height: 0px;
+  position: relative;
+  z-index: 9999;
   --seekbar-color: var(--theme-color-bg);
   --seekbar-color-light: var(--theme-color-bg-light);
   --seekbar-track-bg: var(--seekbar-color-light);

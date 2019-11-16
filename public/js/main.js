@@ -61,6 +61,7 @@ audio.set = function(song) {
   }
   controls_update()
   buffer_update()
+  lyrics_update()
   $('#queue .song').forEach(el => el.className = el.meta == audio.active ? 'song active' : 'song')
   $('#queue .song.active').forEach(scroll_into_view)
   if (player.className == 'hidden') player.className = ''
@@ -102,6 +103,7 @@ audio.delete = function(song) {
       audio.pause()
       audio.src = '//'
       document.body.setAttribute('data-player', 'closed')
+      document.body.setAttribute('data-lyrics', '')
       player.className = 'hidden'
     }
   }
@@ -138,6 +140,24 @@ let buffer_update = () => {
     '--seekbar-track-bg',
     `linear-gradient(to right, var(--seekbar-color-light) 0%, ${gradient + (gradient && ',')} var(--seekbar-color-light) 100%)`
   )
+}
+
+let lyrics_update = () => {
+  fetch(`/api/lyrics/${audio.active.artist}/${audio.active.song}`)
+    .then(res => res.json())
+    .then(res => {
+      let el = $('#lyrics')[0]
+      let buttons = $('button.lyrics')
+      if ((res.lyrics || "").trim()) {
+        el.innerText = res.lyrics
+        el.scrollTop = 0
+        buttons.forEach(b => b.disabled = false)
+      } else {
+        el.innerText = ''
+        document.body.setAttribute('data-lyrics', '')
+        buttons.forEach(b => b.disabled = true)
+      }
+    })
 }
 
 // Audio event listeners
@@ -193,8 +213,17 @@ $('button.next').forEach(el => el.addEventListener('click', ev => {
 }))
 
 $('#player-bar')[0].addEventListener('click', ev => {
-  document.body.setAttribute('data-player',  document.body.getAttribute('data-player') == 'open' ? 'closed' : 'open')
-  $('#queue .song.active').forEach(scroll_into_view)
+  if (document.body.getAttribute('data-player') == 'open') {
+    document.body.setAttribute('data-player', 'closed')
+    document.body.setAttribute('data-lyrics', '')
+  } else {
+    document.body.setAttribute('data-player', 'open')
+    $('#queue .song.active').forEach(scroll_into_view)
+  }
+})
+
+$('button.lyrics')[0].addEventListener('click', ev => {
+  document.body.setAttribute('data-lyrics', document.body.getAttribute('data-lyrics') ? '' : 'show')
 })
 
 // Functions for building pages
@@ -436,7 +465,10 @@ playerBar.addEventListener('touchend', ev => {
   let diffMin = window.innerHeight / 10
   let diff = ev.changedTouches[0].clientY - player.touchStartAbs
   if (diff < -diffMin) document.body.setAttribute('data-player', 'open')
-  if (diff > diffMin) document.body.setAttribute('data-player', 'closed')
+  if (diff > diffMin) {
+    document.body.setAttribute('data-player', 'closed')
+    document.body.setAttribute('data-lyrics', '')
+  }
   $('#queue .song.active').forEach(scroll_into_view)
   player.style.transform = ''
 }, { passive: true })

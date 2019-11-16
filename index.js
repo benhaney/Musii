@@ -60,6 +60,12 @@ app.get('/api/list/:type/:artist?/:album?', (req, res) => {
   res.json(db.list(req.params.type, req.params.artist, req.params.album))
 })
 
+app.get('/api/lyrics/:artist/:song', (req, res) => {
+  fs.readFile(path.join(config['cache-dir'], 'lyrics', `${req.params.artist} - ${req.params.song}.txt`), 'utf8')
+    .then(lyrics => res.json({success: true, lyrics}))
+    .catch(err => res.json({success: false}))
+})
+
 app.get('/art/:artist/:album?/:size?', (req, res) => {
   let file = db.art(req.params.artist, req.params.album)
   if (!file) return res.status(404).end()

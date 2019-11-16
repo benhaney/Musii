@@ -34,10 +34,13 @@
         </div>
         <button class="control" aria-label="play"></button>
       </section>
-      <section id="queue" class="songs">
-        <div id="queue-manager">
-          <button class="shuffle">SHUFFLE</button>
-          <button class="clear">CLEAR</button>
+      <section id="queue-container">
+        <div id="lyrics"></div>
+        <div id="queue" class="songs">
+          <div id="queue-manager">
+            <button class="shuffle">SHUFFLE</button>
+            <button class="clear">CLEAR</button>
+          </div>
         </div>
       </section>
       <section id="player-controls">
@@ -48,6 +51,7 @@
           <button class="control" aria-label="play"></button>
           <button class="next" aria-label="next"></button>
           <div id="time-duration"><span class="small"></span></div>
+          <button class="lyrics" aria-label="lyrics"></button>
         </div>
       </section>
     </section>
