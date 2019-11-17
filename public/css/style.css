@@ -205,6 +205,19 @@ button.batch-add:active {
   width: 8vmax;
   background: #eee;
   box-sizing: content-box;
+  position: relative;
+}
+
+.songs .song img:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  content: "";
 }
 
 .songs .song .bar {
