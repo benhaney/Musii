@@ -17,7 +17,7 @@ let scroll_into_view = x => (x.scrollIntoViewIfNeeded || x.scrollIntoView).call(
 // "scrollend" event. We could attach it to "touchend" and assume the user must make a touch to
 // scroll, but this won't capture the end of momentum-scrolling. As much as I hate it, let's just
 // save the scroll position on an interval.
-window.setTimeout(() => window.setInterval(save_scroll, 500), 1000)
+window.setInterval(() => window.requestIdleCallback(save_scroll), 500)
 
 // IntersectionObserver for lazy loading any image when it gets close to the viewport
 let lazyloader = new IntersectionObserver((entries, observer) => {
@@ -38,7 +38,13 @@ let main = $('main')[0]
 let audio = new Audio()
 audio.preloader = new Audio()
 audio.preloader.preload = 'auto'
+audio.preloader.volume = 0
 audio.queue = []
+audio._play = audio.play
+audio.play = function() {
+  this._play()
+  if (this.currentTime != 0) this.precache()
+}
 audio.set = function(song) {
   this.active = song
   this.src = `/audio/${[song.song, song.album, song.artist]
@@ -90,7 +96,6 @@ audio.push = function(song) {
   fetch(`/hint/audio/${[song.song, song.album, song.artist]
     .filter(x => x)
     .map(encodeURIComponent).join('/')}`)
-  audio.precache()
   controls_update()
   localStorage.setItem('queue', JSON.stringify(audio.queue))
 }
@@ -100,8 +105,8 @@ audio.delete = function(song) {
     if (i < this.queue.length - 1) this.next()
     else if (i > 0) { this.prev(); this.pause() }
     else {
-      audio.pause()
-      audio.src = '//'
+      this.pause()
+      this.src = '//'
       document.body.setAttribute('data-player', 'closed')
       document.body.setAttribute('data-lyrics', '')
       player.className = 'hidden'
@@ -116,9 +121,11 @@ audio.delete = function(song) {
 audio.precache = function() {
   let song = this.queue[this.queue.indexOf(this.active)+1]
   if (!song) return
-  this.preloader.src = `/audio/${[song.song, song.album, song.artist]
+  let tsrc = `/audio/${[song.song, song.album, song.artist]
     .filter(x => x)
     .map(encodeURIComponent).join('/')}`
+  if (!this.preloader.src.endsWith(tsrc)) this.preloader.src = tsrc
+  this.preloader.play().then(() => this.preloader.pause()).catch(err => {})
 }
 
 let controls_update = () => {
